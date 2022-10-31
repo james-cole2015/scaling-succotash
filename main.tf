@@ -10,5 +10,5 @@ module "vpc2" {
 }
 */
 module "aws_data" {
-    source = "./modules/data"
+  source = "./modules/data"
 }

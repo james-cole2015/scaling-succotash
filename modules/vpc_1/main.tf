@@ -5,7 +5,7 @@ module "vpc" {
   name = var.vpc_1_name
   cidr = var.vpc_1_cidr
 
-  azs              = var.vpc_1_azs 
+  azs              = var.vpc_1_azs
   private_subnets  = var.vpc_1_private_subnets
   public_subnets   = var.vpc_1_public_subnets
   database_subnets = var.vpc_1_database_subnets
