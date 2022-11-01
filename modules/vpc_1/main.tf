@@ -20,12 +20,36 @@ resource "aws_vpc_peering_connection" "vpc1tovpc2" {
   vpc_id        = module.vpc.vpc_id
   auto_accept   = true
 }
-/*
-  resource "aws_route_table" "vpc1routetable" {
-    vpc_id = module.vpc.vpc_id
+
+
+# destination is the public subnets of the RequestingVPC
+  resource "aws_route_table" "accepter_rt" {
+    vpc_id = var.vpc2
 
     route {
-      cidr_block = module.vpc.cidr_block
+      #needs to be vpc2 subnets
+      cidr_block = module.vpc.public_subnets_cidr_blocks[0]
+      vpc_peering_connection_id = aws_vpc_peering_connection.vpc1tovpc2.id
     }
+    depends_on = [
+      aws_vpc_peering_connection.vpc1tovpc2
+    ]
   }
-*/
+
+# destination is the private instance of the requester private vpc
+resource "aws_route_table" "requester_rt" {
+  vpc_id = module.vpc.vpc_id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = var.igw_id 
+  }
+
+  route {
+    cidr_block = var.private_sn_vpc2
+    vpc_peering_connection_id = aws_vpc_peering_connection.vpc1tovpc2.id
+  }
+  depends_on = [
+    aws_vpc_peering_connection.vpc1tovpc2
+  ]
+}

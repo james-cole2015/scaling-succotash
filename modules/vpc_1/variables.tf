@@ -33,3 +33,11 @@ variable "vpc2" {
 variable "account_id" {
   type = string
 }
+
+variable "igw_id" {
+  type = string
+}
+
+variable "private_sn_vpc2" {
+  type = string
+}
