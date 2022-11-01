@@ -5,3 +5,7 @@ output "az_names" {
 output "callerinfo" {
   value = data.aws_caller_identity.current
 }
+
+output "vpc_1_igw" {
+  value = data.aws_internet_gateway.vpc1
+}
