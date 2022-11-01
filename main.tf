@@ -10,6 +10,6 @@ module "vpc2" {
 }
 
 module "aws_data" {
-  source = "./modules/data"
+  source   = "./modules/data"
   vpc_1_id = module.vpc1.vpc1info.vpc_id
 }

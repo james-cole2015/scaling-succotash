@@ -20,3 +20,12 @@ resource "aws_vpc_peering_connection" "vpc1tovpc2" {
   vpc_id        = module.vpc.vpc_id
   auto_accept   = true
 }
+/*
+  resource "aws_route_table" "vpc1routetable" {
+    vpc_id = module.vpc.vpc_id
+
+    route {
+      cidr_block = module.vpc.cidr_block
+    }
+  }
+*/
