@@ -41,3 +41,7 @@ variable "igw_id" {
 variable "private_sn_vpc2" {
   type = string
 }
+
+variable "private_sn_id_vpc2" {
+  type = string
+}

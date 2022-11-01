@@ -53,3 +53,14 @@ resource "aws_route_table" "requester_rt" {
     aws_vpc_peering_connection.vpc1tovpc2
   ]
 }
+
+
+resource "aws_route_table_association" "requester_rt_association" {
+  subnet_id = module.vpc.public_subnets[0].id
+  route_table_id = aws_route_table.requester_rt.id
+}
+
+resource "aws_route_table_association" "accepter_rt_association" {
+  subnet_id = var.private_sn_id_vpc2
+  route_table_id = aws_route_table.accepter_rt.id
+}
