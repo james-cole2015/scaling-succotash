@@ -26,3 +26,10 @@ variable "vpc_1_intra_subnets" {
   type    = list(string)
   default = ["10.100.192.0/19", "10.100.224.0/19"]
 }
+variable "vpc2" {
+  type = any
+}
+
+variable "account_id" {
+  type = string
+}
