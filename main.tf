@@ -5,7 +5,7 @@ module "vpc1" {
   account_id         = module.aws_data.callerinfo.account_id
   igw_id             = module.aws_data.vpc_1_igw.id
   private_sn_vpc2    = module.vpc2.vpc2info.private_subnets_cidr_blocks[0]
-  private_sn_id_vpc2 = module.vpc2.vpc2info.private_subnets[0].id
+  private_sn_id_vpc2 = module.vpc2.vpc2info.private_subnets[0]
 }
 
 module "vpc2" {

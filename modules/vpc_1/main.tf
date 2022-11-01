@@ -56,7 +56,7 @@ resource "aws_route_table" "requester_rt" {
 
 
 resource "aws_route_table_association" "requester_rt_association" {
-  subnet_id      = module.vpc.public_subnets[0].id
+  subnet_id      = module.vpc.public_subnets[0]
   route_table_id = aws_route_table.requester_rt.id
 }
 
