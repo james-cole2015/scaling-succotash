@@ -23,7 +23,7 @@ jobs:
         id: fmt
         run: terraform fmt --recursive 
       - name: Terraform Format Check
-        id: fmt check
+        id: fmt_check
         run: terraform fmt -check
 
       - name: Terraform Init
