@@ -23,18 +23,18 @@ resource "aws_vpc_peering_connection" "vpc1tovpc2" {
 
 
 # destination is the public subnets of the RequestingVPC
-  resource "aws_route_table" "accepter_rt" {
-    vpc_id = var.vpc2
+resource "aws_route_table" "accepter_rt" {
+  vpc_id = var.vpc2
 
-    route {
-      #needs to be vpc2 subnets
-      cidr_block = module.vpc.public_subnets_cidr_blocks[0]
-      vpc_peering_connection_id = aws_vpc_peering_connection.vpc1tovpc2.id
-    }
-    depends_on = [
-      aws_vpc_peering_connection.vpc1tovpc2
-    ]
+  route {
+    #needs to be vpc2 subnets
+    cidr_block                = module.vpc.public_subnets_cidr_blocks[0]
+    vpc_peering_connection_id = aws_vpc_peering_connection.vpc1tovpc2.id
   }
+  depends_on = [
+    aws_vpc_peering_connection.vpc1tovpc2
+  ]
+}
 
 # destination is the private instance of the requester private vpc
 resource "aws_route_table" "requester_rt" {
@@ -42,11 +42,11 @@ resource "aws_route_table" "requester_rt" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = var.igw_id 
+    gateway_id = var.igw_id
   }
 
   route {
-    cidr_block = var.private_sn_vpc2
+    cidr_block                = var.private_sn_vpc2
     vpc_peering_connection_id = aws_vpc_peering_connection.vpc1tovpc2.id
   }
   depends_on = [
@@ -56,11 +56,11 @@ resource "aws_route_table" "requester_rt" {
 
 
 resource "aws_route_table_association" "requester_rt_association" {
-  subnet_id = module.vpc.public_subnets[0].id
+  subnet_id      = module.vpc.public_subnets[0].id
   route_table_id = aws_route_table.requester_rt.id
 }
 
 resource "aws_route_table_association" "accepter_rt_association" {
-  subnet_id = var.private_sn_id_vpc2
+  subnet_id      = var.private_sn_id_vpc2
   route_table_id = aws_route_table.accepter_rt.id
 }
