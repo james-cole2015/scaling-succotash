@@ -20,7 +20,7 @@ resource "aws_vpc_peering_connection" "vpc1tovpc2" {
   vpc_id        = module.vpc.vpc_id
   auto_accept   = true
 
-  tags {
+  tags = {
     function = "vpc peering"
   }
 }
