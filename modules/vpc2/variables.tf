@@ -1,6 +1,6 @@
 variable "vpc_2_name" {
   type    = string
-  default = "darling-wasp"
+  default = "AcceptingVPC"
 }
 variable "vpc_2_cidr" {
   type    = string

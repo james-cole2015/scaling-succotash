@@ -1,6 +1,6 @@
 variable "vpc_1_name" {
   type    = string
-  default = "incognito-monkey"
+  default = "RequestingVPC"
 }
 variable "vpc_1_cidr" {
   type    = string
