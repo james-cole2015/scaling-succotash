@@ -22,7 +22,7 @@ provider "aws" {
   region = "us-east-1"
     default_tags {
     tags = {
-      Environment = "production"
+      Environment = "development"
       platform    = "terraform"
       repo-name   = "scaling-succotash"
       User        = "MatthewDavis"
