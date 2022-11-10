@@ -45,7 +45,7 @@ resource "aws_security_group" "allow_ssh_accepting" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = "54.161.110.139/32"
+    cidr_blocks = ["54.161.110.139/32"]
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_security_group" "allow_ssh_requesting" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = "54.161.110.139/32"
+    cidr_blocks = ["54.161.110.139/32"]
   }
 }
 
