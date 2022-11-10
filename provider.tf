@@ -25,7 +25,7 @@ provider "aws" {
       environment = "development"
       platform    = "terraform"
       repo-name   = "scaling-succotash"
-      User        = "MatthewDavis"
+      user        = "MatthewDavis"
     }
   }
 }
