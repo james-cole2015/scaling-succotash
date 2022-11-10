@@ -35,6 +35,32 @@ resource "aws_subnet" "accepting_subnet" {
 }
 
 #----------------------------------------------------------------#
+##                    EC2 Securty Groups                        ##
+#----------------------------------------------------------------#
+
+resource "aws_security_group" "allow_ssh_accepting" {
+  name = "allow ssh from accepting" 
+  vpc_id = aws_vpc.accepting_vpc.id
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = "54.161.110.139/32"
+  }
+}
+
+resource "aws_security_group" "allow_ssh_requesting" {
+  name = "allow ssh from requesting" 
+  vpc_id = aws_vpc.requesting_vpc.id
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = "54.161.110.139/32"
+  }
+}
+
+#----------------------------------------------------------------#
 ##                  Retrieving Stored KeyPair                   ##
 #----------------------------------------------------------------#
 
@@ -79,6 +105,7 @@ resource "aws_instance" "requesting_ec2" {
   instance_type = "t3.micro"
   subnet_id = aws_subnet.requesting_subnet.id
   key_name = data.aws_key_pair.mdaviskey.key_name
+  security_groups = [ "aws_security_group.allow_ssh_requesting" ]
 
   tags = {
     Name = "RequestingEC2"
@@ -90,6 +117,7 @@ resource "aws_instance" "accepting_ec2" {
   instance_type = "t3.micro"
   subnet_id = aws_subnet.accepting_subnet.id
   key_name = data.aws_key_pair.mdaviskey.key_name
+  security_groups = [ "aws_security_group.allow_ssh_accepting" ]
 
   tags = {
     Name = "AcceptingEC2"
