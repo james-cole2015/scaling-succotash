@@ -1,3 +1,7 @@
+#----------------------------------------------------------------#
+##                 Creating VPCs & Subnets                      ##
+#----------------------------------------------------------------#
+
 resource "aws_vpc" "requesting_vpc" {
   cidr_block = "10.100.0.0/16"
   tags = {
@@ -30,6 +34,27 @@ resource "aws_subnet" "accepting_subnet" {
   }
 }
 
+#----------------------------------------------------------------#
+##                  Retrieving Stored KeyPair                   ##
+#----------------------------------------------------------------#
+
+data "aws_key_pair" "mdaviskey" {
+  key_name = "m-davis-key"
+  include_public_key = true
+}
+
+output "m-davis-keyname" {
+  value = data.aws_key_pair.mdaviskey.key_name
+}
+
+output "m-davis-public_key-key" {
+  value = data.aws_key_pair.mdaviskey.public_key
+}
+
+#----------------------------------------------------------------#
+##                     Getting Ubuntu AMI                       ##
+#----------------------------------------------------------------#
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -45,11 +70,15 @@ data "aws_ami" "ubuntu" {
 
   owners = ["099720109477"] # Canonical
 }
+#----------------------------------------------------------------#
+##                  Creating EC2 instances                      ##
+#----------------------------------------------------------------#
 
 resource "aws_instance" "requesting_ec2" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
   subnet_id = aws_subnet.requesting_subnet.id
+  key_name = data.aws_key_pair.mdaviskey.key_name
 
   tags = {
     Name = "RequestingEC2"
@@ -60,6 +89,7 @@ resource "aws_instance" "accepting_ec2" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
   subnet_id = aws_subnet.accepting_subnet.id
+  key_name = data.aws_key_pair.mdaviskey.key_name
 
   tags = {
     Name = "AcceptingEC2"
