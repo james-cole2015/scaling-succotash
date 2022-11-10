@@ -105,7 +105,7 @@ resource "aws_instance" "requesting_ec2" {
   instance_type = "t3.micro"
   subnet_id = aws_subnet.requesting_subnet.id
   key_name = data.aws_key_pair.mdaviskey.key_name
-  security_groups = [ "aws_security_group.allow_ssh_requesting.id" ]
+  security_groups = [aws_security_group.allow_ssh_requesting.id]
 
   tags = {
     Name = "RequestingEC2"
@@ -117,7 +117,7 @@ resource "aws_instance" "accepting_ec2" {
   instance_type = "t3.micro"
   subnet_id = aws_subnet.accepting_subnet.id
   key_name = data.aws_key_pair.mdaviskey.key_name
-  security_groups = [ "aws_security_group.allow_ssh_accepting.id" ]
+  security_groups = [aws_security_group.allow_ssh_accepting.id]
 
   tags = {
     Name = "AcceptingEC2"
