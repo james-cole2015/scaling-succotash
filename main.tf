@@ -1,10 +1,12 @@
 #----------------------------------------------------------------#
 ##                 Creating VPCs & Subnets                      ##
 #----------------------------------------------------------------#
+data "aws_availability_zones" "zones" {}
 
 module "requesting_vpc" {
   source         = "terraform-aws-modules/vpc/aws"
   version        = "3.18.1"
+  azs            = data.aws_availability_zones.zones.names 
   cidr           = "10.100.0.0/16"
   create_igw     = true
   public_subnets = ["10.100.0.0/24"]
