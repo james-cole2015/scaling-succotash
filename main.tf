@@ -11,14 +11,14 @@ resource "aws_vpc" "requesting_vpc" {
 
 resource "aws_vpc" "accepting_vpc" {
   cidr_block = "10.200.0.0/16"
-    tags = {
+  tags = {
     Name = "accepting-vpc"
   }
 }
 
 resource "aws_subnet" "requesting_subnet" {
-  vpc_id = aws_vpc.requesting_vpc.id
-  cidr_block = "10.100.1.0/24"
+  vpc_id                  = aws_vpc.requesting_vpc.id
+  cidr_block              = "10.100.1.0/24"
   map_public_ip_on_launch = true
   tags = {
     "Name" = "requesting-subnet"
@@ -26,8 +26,8 @@ resource "aws_subnet" "requesting_subnet" {
 }
 
 resource "aws_subnet" "accepting_subnet" {
-  vpc_id = aws_vpc.accepting_vpc.id
-  cidr_block = "10.200.1.0/24"
+  vpc_id                  = aws_vpc.accepting_vpc.id
+  cidr_block              = "10.200.1.0/24"
   map_public_ip_on_launch = true
   tags = {
     "Name" = "accepting-subnet"
@@ -39,15 +39,15 @@ resource "aws_subnet" "accepting_subnet" {
 #----------------------------------------------------------------#
 
 resource "aws_security_group" "allow_ssh_accepting" {
-  name = "allow ssh from accepting" 
+  name   = "allow ssh from accepting"
   vpc_id = aws_vpc.accepting_vpc.id
   ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["54.161.110.139/32"]
   }
-    egress {
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -56,15 +56,15 @@ resource "aws_security_group" "allow_ssh_accepting" {
 }
 
 resource "aws_security_group" "allow_ssh_requesting" {
-  name = "allow ssh from requesting" 
+  name   = "allow ssh from requesting"
   vpc_id = aws_vpc.requesting_vpc.id
   ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["54.161.110.139/32"]
   }
-    egress {
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -77,7 +77,7 @@ resource "aws_security_group" "allow_ssh_requesting" {
 #----------------------------------------------------------------#
 
 data "aws_key_pair" "mdaviskey" {
-  key_name = "m-davis-key"
+  key_name           = "m-davis-key"
   include_public_key = true
 }
 
@@ -113,10 +113,10 @@ data "aws_ami" "ubuntu" {
 #----------------------------------------------------------------#
 
 resource "aws_instance" "requesting_ec2" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
-  subnet_id = aws_subnet.requesting_subnet.id
-  key_name = data.aws_key_pair.mdaviskey.key_name
+  ami             = data.aws_ami.ubuntu.id
+  instance_type   = "t3.micro"
+  subnet_id       = aws_subnet.requesting_subnet.id
+  key_name        = data.aws_key_pair.mdaviskey.key_name
   security_groups = [aws_security_group.allow_ssh_requesting.id]
 
   tags = {
@@ -125,10 +125,10 @@ resource "aws_instance" "requesting_ec2" {
 }
 
 resource "aws_instance" "accepting_ec2" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
-  subnet_id = aws_subnet.accepting_subnet.id
-  key_name = data.aws_key_pair.mdaviskey.key_name
+  ami             = data.aws_ami.ubuntu.id
+  instance_type   = "t3.micro"
+  subnet_id       = aws_subnet.accepting_subnet.id
+  key_name        = data.aws_key_pair.mdaviskey.key_name
   security_groups = [aws_security_group.allow_ssh_accepting.id]
 
   tags = {
