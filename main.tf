@@ -60,6 +60,9 @@ resource "aws_default_route_table" "requesting-route-table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.requesting-igw.id
   }
+    tags = {
+    Name = "requesting-vpc-route-table"
+  }
 }
 
 resource "aws_default_route_table" "accepting-route-table" {
@@ -68,6 +71,9 @@ resource "aws_default_route_table" "accepting-route-table" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.accepting-igw.id
+  }
+  tags = {
+    Name = "accepting-vpc-route-table"
   }
 }
 
