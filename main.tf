@@ -1,33 +1,74 @@
 #----------------------------------------------------------------#
-##                 Creating VPCs & Subnets                      ##
+##                      VPCs & Subnets                          ##
 #----------------------------------------------------------------#
 data "aws_availability_zones" "zones" {}
 
-module "requesting_vpc" {
-  source         = "terraform-aws-modules/vpc/aws"
-  version        = "3.18.1"
-  azs            = data.aws_availability_zones.zones.names 
-  cidr           = "10.100.0.0/16"
-  create_igw     = true
-  igw_tags       = {
-    "Name" = "requesting-vpc-igw"
-  }
-  public_subnets = ["10.100.0.0/24"]
-  public_subnet_names = ["requesting-subnet"]
-  default_route_table_routes = {
-    route {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = module.requesting_vpc.public_internet_gateway_route_id
-    }
+resource "aws_vpc" "requesting_vpc" {
+  cidr_block = "10.100.0.0/16"
+  tags = {
+    Name = "requesting-vpc"
   }
 }
-/*
-module "requesting_vpc" {
-  source         = "terraform-aws-modules/vpc/aws"
-  version        = "3.18.1"
-  cidr           = "10.200.0.0/16"
-  create_igw     = true
-  public_subnets = ["10.200.0.0/24"]
+
+resource "aws_vpc" "accepting_vpc" {
+  cidr_block = "10.200.0.0/16"
+  tags = {
+    Name = "accepting-vpc"
+  }
+}
+
+resource "aws_subnet" "requesting_subnet" {
+  vpc_id                  = aws_vpc.requesting_vpc.id
+  cidr_block              = "10.100.1.0/24"
+  map_public_ip_on_launch = true
+  tags = {
+    "Name" = "requesting-subnet"
+  }
+}
+
+resource "aws_subnet" "accepting_subnet" {
+  vpc_id                  = aws_vpc.accepting_vpc.id
+  cidr_block              = "10.200.1.0/24"
+  map_public_ip_on_launch = true
+  tags = {
+    "Name" = "accepting-subnet"
+  }
+}
+
+#----------------------------------------------------------------#
+##                      IGWs & Routes                           ##
+#----------------------------------------------------------------#
+
+resource "aws_internet_gateway" "requesting-igw" {
+  vpc_id = aws_vpc.requesting_vpc.id
+  tags = {
+    Name = "requesting-igw"
+  }
+}
+
+resource "aws_internet_gateway" "accepting-igw" {
+  vpc_id = aws_vpc.accepting_vpc.id
+  tags = {
+    Name = "accepting-igw"
+  }
+}
+
+resource "aws_default_route_table" "requesting-route-table" {
+  default_route_table_id = aws_vpc.requesting_vpc.main_route_table_id
+
+  route {
+    cidr_block = "10.100.0.0/0"
+    gateway_id = aws_internet_gateway.requesting-igw.id
+  }
+}
+
+resource "aws_default_route_table" "accepting-route-table" {
+  default_route_table_id = aws_vpc.accepting_vpc.main_route_table_id
+
+  route {
+    cidr_block = "10.200.0.0/0"
+    gateway_id = aws_internet_gateway.accepting-igw.id
+  }
 }
 
 #----------------------------------------------------------------#
@@ -53,7 +94,7 @@ resource "aws_security_group" "allow_ssh_accepting" {
 
 resource "aws_security_group" "allow_ssh_requesting" {
   name   = "allow ssh from requesting"
-  vpc_id = module.requesting_vpc.vpc_id
+  vpc_id = aws_vpc.requesting_vpc.id
   ingress {
     from_port   = 22
     to_port     = 22
@@ -107,7 +148,7 @@ data "aws_ami" "ubuntu" {
 #----------------------------------------------------------------#
 ##                  Creating EC2 instances                      ##
 #----------------------------------------------------------------#
-
+/*
 resource "aws_instance" "requesting_ec2" {
   ami             = data.aws_ami.ubuntu.id
   instance_type   = "t3.micro"
