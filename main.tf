@@ -8,7 +8,7 @@ module "requesting_vpc" {
   cidr           = "10.100.0.0/16"
   create_igw     = true
   public_subnets = ["10.100.0.0/24"]
-  public_subnet_names = "requesting-subnet"
+  public_subnet_names = ["requesting-subnet"]
   /*default_route_table_routes {
     route {
       cidr_block = "10.200.0.0/16"
