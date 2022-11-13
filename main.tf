@@ -9,10 +9,13 @@ module "requesting_vpc" {
   azs            = data.aws_availability_zones.zones.names 
   cidr           = "10.100.0.0/16"
   create_igw     = true
+  igw_tags       = {
+    "Name" = "requesting-vpc-igw"
+  }
   public_subnets = ["10.100.0.0/24"]
   public_subnet_names = ["requesting-subnet"]
   default_route_table_routes = {
-    route = {
+    route {
       cidr_block = "0.0.0.0/0"
       gateway_id = module.requesting_vpc.public_internet_gateway_route_id
     }
