@@ -157,7 +157,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "requesting_ec2" {
   ami             = data.aws_ami.ubuntu.id
-  instance_type   = "t3.micro"
+  instance_type   = "t2.micro"
   subnet_id       = aws_subnet.requesting_subnet.id
   key_name        = data.aws_key_pair.mdaviskey.key_name
   security_groups = [aws_security_group.allow_ssh_requesting.id]
@@ -169,7 +169,7 @@ resource "aws_instance" "requesting_ec2" {
 
 resource "aws_instance" "accepting_ec2" {
   ami             = data.aws_ami.ubuntu.id
-  instance_type   = "t3.micro"
+  instance_type   = "t2.micro"
   subnet_id       = aws_subnet.accepting_subnet.id
   key_name        = data.aws_key_pair.mdaviskey.key_name
   security_groups = [aws_security_group.allow_ssh_accepting.id]
