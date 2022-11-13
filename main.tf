@@ -2,36 +2,27 @@
 ##                 Creating VPCs & Subnets                      ##
 #----------------------------------------------------------------#
 
-resource "aws_vpc" "requesting_vpc" {
-  cidr_block = "10.100.0.0/16"
-  tags = {
-    Name = "requesting-vpc"
-  }
+module "requesting_vpc" {
+  source         = "terraform-aws-modules/vpc/aws"
+  version        = "3.18.1"
+  cidr           = "10.100.0.0/16"
+  create_igw     = true
+  public_subnets = ["10.100.0.0/24"]
+  public_subnet_names = "requesting-subnet"
+  /*default_route_table_routes {
+    route {
+      cidr_block = "10.200.0.0/16"
+      gateway_id = module.requesting_vpc.public_internet_gateway_route_id
+    }
+  }*/
 }
-
-resource "aws_vpc" "accepting_vpc" {
-  cidr_block = "10.200.0.0/16"
-  tags = {
-    Name = "accepting-vpc"
-  }
-}
-
-resource "aws_subnet" "requesting_subnet" {
-  vpc_id                  = aws_vpc.requesting_vpc.id
-  cidr_block              = "10.100.1.0/24"
-  map_public_ip_on_launch = true
-  tags = {
-    "Name" = "requesting-subnet"
-  }
-}
-
-resource "aws_subnet" "accepting_subnet" {
-  vpc_id                  = aws_vpc.accepting_vpc.id
-  cidr_block              = "10.200.1.0/24"
-  map_public_ip_on_launch = true
-  tags = {
-    "Name" = "accepting-subnet"
-  }
+/*
+module "requesting_vpc" {
+  source         = "terraform-aws-modules/vpc/aws"
+  version        = "3.18.1"
+  cidr           = "10.200.0.0/16"
+  create_igw     = true
+  public_subnets = ["10.200.0.0/24"]
 }
 
 #----------------------------------------------------------------#
@@ -57,7 +48,7 @@ resource "aws_security_group" "allow_ssh_accepting" {
 
 resource "aws_security_group" "allow_ssh_requesting" {
   name   = "allow ssh from requesting"
-  vpc_id = aws_vpc.requesting_vpc.id
+  vpc_id = module.requesting_vpc.vpc_id
   ingress {
     from_port   = 22
     to_port     = 22
@@ -134,4 +125,4 @@ resource "aws_instance" "accepting_ec2" {
   tags = {
     Name = "AcceptingEC2"
   }
-}
+}*/
