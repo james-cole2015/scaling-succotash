@@ -184,7 +184,7 @@ resource "aws_instance" "accepting_ec2" {
 #----------------------------------------------------------------#
 
 resource "aws_vpc_peering_connection" "foo" {
-  peer_vpc_id   = aws_vpc.requesting_vpc.id 
-  vpc_id        = aws_vpc.accepting_vpc.id
+  peer_vpc_id   = aws_vpc.accepting_vpc.id 
+  vpc_id        = aws_vpc.requesting_vpc.id
   auto_accept   = true
 }
