@@ -60,6 +60,10 @@ resource "aws_default_route_table" "requesting-route-table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.requesting-igw.id
   }
+    route {
+    cidr_block = "10.200.0.0/16"
+    vpc_peering_connection_id = aws_vpc_peering_connection.foo.id 
+  }
     tags = {
     Name = "requesting-vpc-route-table"
   }
@@ -74,6 +78,10 @@ resource "aws_default_route_table" "accepting-route-table" {
   }
   tags = {
     Name = "accepting-vpc-route-table"
+  }
+  route {
+    cidr_block = "10.100.0.0/16"
+    vpc_peering_connection_id = aws_vpc_peering_connection.foo.id 
   }
 }
 
