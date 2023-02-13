@@ -206,7 +206,7 @@ resource "aws_flow_log" "flow_logs_example" {
   iam_role_arn = aws_iam_role.example.arn
   log_destination = aws_cloudwatch_log_group.example.arn
   traffic_type = "ALL"
-  vpc_id = aws_vpc.requesting_vpc.vpc_id
+  vpc_id = aws_vpc.requesting_vpc.id
 }
 
 resource "aws_cloudwatch_log_group" "example" {
